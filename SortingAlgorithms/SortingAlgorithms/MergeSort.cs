@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace SortingAlgorithms {
     public static class MergeSort {
-        private static int[] MergeLists(int[] firstHalf, int[] secondHalf) {
-            int[] list = new int[firstHalf.Length + secondHalf.Length];
+        private static T[] MergeLists<T>(T[] firstHalf, T[] secondHalf, Func<T, T, bool> sortCondition) {
+            T[] list = new T[firstHalf.Length + secondHalf.Length];
 
             int firstHalfIndex = 0;
             int secondHalfIndex = 0;
 
             for (int i = 0; i < firstHalf.Length + secondHalf.Length; i++) {
                 if (firstHalfIndex < firstHalf.Length && secondHalfIndex < secondHalf.Length) {
-                    if (firstHalf[firstHalfIndex] < secondHalf[secondHalfIndex]) {
+                    if (sortCondition(firstHalf[firstHalfIndex], secondHalf[secondHalfIndex])) {
                         list[i] = firstHalf[firstHalfIndex];
                         firstHalfIndex++;
                     } else {
@@ -34,21 +34,21 @@ namespace SortingAlgorithms {
             return list;
         }
 
-        public static int[] Sort(int[] elementList) {
+        public static T[] Sort<T>(T[] elementList, Func<T, T, bool> sortCondition) {
             if (elementList.Length <= 1)
                 return elementList;
 
             int length = elementList.Length;
             int middle = length / 2;
 
-            int[] firstarray = elementList.GetElementsFrom(0, middle);
-            int[] secondArray = elementList.GetElementsFrom(middle, length);
+            T[] firstarray = elementList.GetElementsFrom(0, middle);
+            T[] secondArray = elementList.GetElementsFrom(middle, length);
 
-            return MergeLists(Sort(firstarray), Sort(secondArray));
+            return MergeLists(Sort(firstarray, sortCondition), Sort(secondArray, sortCondition), sortCondition);
         }
 
-        private static int[] GetElementsFrom(this int[] elementList, int lower, int upper) {
-            int[] list = new int[upper - lower];
+        private static T[] GetElementsFrom<T>(this T[] elementList, int lower, int upper) {
+            T[] list = new T[upper - lower];
 
             for (int i = lower; i < upper; i++)
                 list[i - lower] = elementList[i];
