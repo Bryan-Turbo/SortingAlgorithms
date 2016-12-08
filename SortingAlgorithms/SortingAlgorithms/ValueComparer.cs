@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 namespace SortingAlgorithms {
     public static class ValueComparer {
         public static bool AlphabeticalCompare(string value1, string value2) {
-            char[] char1 = value1.ToLower().ToCharArray();
-            char[] char2 = value2.ToLower().ToCharArray();
+            value1 = value1.ToLower();
+            value2 = value2.ToLower();
 
             int length;
-            if (char1.Length < char2.Length)
-                length = char1.Length;
+            if (value1.Length < value2.Length)
+                length = value1.Length;
             else
-                length = char2.Length;
+                length = value2.Length;
 
             for (int i = 0; i < length; i++) {
-                if (char1[i] == char2[i])
+                if (value1[i] == value2[i])
                     continue;
 
-                if (char1[i] < char2[i]) {
+                if (value1[i] < value2[i]) {
                     return true;
                 }
                 break;
