@@ -6,16 +6,16 @@ namespace SortingAlgorithms
     {
         private static Random r { get; set; }
 
-        public static int[] Sort(int[] inputArray)
+        public static T[] Sort<T>(T[] inputArray, Func<T, T, bool> compare)
         {
             r = new Random();
-            int[] newArray = new int[inputArray.Length];
+            T[] newArray = new T[inputArray.Length];
             inputArray.CopyTo(newArray, 0);
-            Partition(newArray, 0, inputArray.Length - 1);
+            Partition(newArray, 0, inputArray.Length - 1, compare);
             return newArray;
         }
 
-        private static void Partition(int[] input, int startIndex, int endIndex)
+        private static void Partition<T>(T[] input, int startIndex, int endIndex, Func<T, T, bool> compare)
         {
             if (endIndex - startIndex < 1) return;
 
@@ -23,12 +23,12 @@ namespace SortingAlgorithms
 
             int lowIndex = startIndex + 1;
             int highIndex = endIndex;
-            int startValue = input[startIndex];
+            T startValue = input[startIndex];
 
             while (highIndex - lowIndex > 0)
             {
-                bool lowValueSmaller = input[lowIndex] < startValue;
-                bool highValueBigger = input[highIndex] > startValue;
+                bool lowValueSmaller = compare(input[lowIndex], startValue);
+                bool highValueBigger = compare(startValue, input[highIndex]);
 
                 if (lowValueSmaller) lowIndex++;
                 if (highValueBigger) highIndex--;
@@ -39,15 +39,15 @@ namespace SortingAlgorithms
                 highIndex--;
 
             }
-            if (!(input[startIndex] > input[highIndex])) highIndex--;
-            if (input[startIndex] > input[highIndex]) Swap(input, startIndex, highIndex);
-            Partition(input, startIndex, highIndex - 1);
-            Partition(input, highIndex + 1, endIndex);
+            if (!compare(input[highIndex], input[startIndex])) highIndex--;
+            if (compare(input[highIndex], input[startIndex])) Swap(input, startIndex, highIndex);
+            Partition(input, startIndex, highIndex - 1, compare);
+            Partition(input, highIndex + 1, endIndex, compare);
         }
 
-        private static void Swap(int[] input, int lowIndex, int highIndex)
+        private static void Swap<T>(T[] input, int lowIndex, int highIndex)
         {
-            int tempValue = input[lowIndex];
+            T tempValue = input[lowIndex];
             input[lowIndex] = input[highIndex];
             input[highIndex] = tempValue;
         }
